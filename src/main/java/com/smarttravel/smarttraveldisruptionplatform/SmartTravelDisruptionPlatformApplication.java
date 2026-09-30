@@ -9,5 +9,4 @@ public class SmartTravelDisruptionPlatformApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SmartTravelDisruptionPlatformApplication.class, args);
 	}
-
 }
