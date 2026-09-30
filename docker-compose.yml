@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: travel-disruption-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: travel_disruption
+      POSTGRES_USER: travel_user
+      POSTGRES_PASSWORD: travel_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - travel-disruption-data:/var/lib/postgresql/data
+
+volumes:
+  travel-disruption-data:
