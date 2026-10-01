@@ -26,6 +26,11 @@ public class UserService {
         User savedUser = userRepository.save(user);
         return UserResponse.fromEntity(savedUser);
     }
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+        return UserResponse.fromEntity(user);
+    }
 
     private String hashPassword(String rawPassword) {
         // TODO: înlocuim cu BCrypt când adăugăm Spring Security
