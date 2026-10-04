@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -21,5 +23,15 @@ public class GlobalExceptionHandler {
                 "message", ex.getMessage()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        Map<String, Object> body = Map.of(
+                "timestamp", LocalDateTime.now().toString(),
+                "status", HttpStatus.CONFLICT.value(),
+                "error", "Conflict",
+                "message", "Operation violates a data constraint (duplicate value or record still referenced by other data)"
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 }

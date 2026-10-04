@@ -4,6 +4,8 @@ import com.smarttravel.smarttraveldisruptionplatform.domain.User;
 import com.smarttravel.smarttraveldisruptionplatform.domain.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -26,10 +28,36 @@ public class UserService {
         User savedUser = userRepository.save(user);
         return UserResponse.fromEntity(savedUser);
     }
+
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
         return UserResponse.fromEntity(user);
+    }
+
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserResponse::fromEntity)
+                .toList();
+    }
+
+    public UserResponse updateUser(Long id, UserUpdateRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName());
+        user.setRole(request.getRole());
+
+        User savedUser = userRepository.save(user);
+        return UserResponse.fromEntity(savedUser);
+    }
+
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+        userRepository.deleteById(id);
     }
 
     private String hashPassword(String rawPassword) {
