@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
+import com.smarttravel.smarttraveldisruptionplatform.trip.TripNotFoundException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -33,5 +35,15 @@ public class GlobalExceptionHandler {
                 "message", "Operation violates a data constraint (duplicate value or record still referenced by other data)"
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+    @ExceptionHandler(TripNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleTripNotFound(TripNotFoundException ex) {
+        Map<String, Object> body = Map.of(
+                "timestamp", LocalDateTime.now().toString(),
+                "status", HttpStatus.NOT_FOUND.value(),
+                "error", "Not Found",
+                "message", ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 }
