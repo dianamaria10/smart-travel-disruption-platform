@@ -13,6 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import com.smarttravel.smarttraveldisruptionplatform.trip.TripNotFoundException;
 
+import com.smarttravel.smarttraveldisruptionplatform.segment.SegmentNotFoundException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -38,6 +40,16 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(TripNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleTripNotFound(TripNotFoundException ex) {
+        Map<String, Object> body = Map.of(
+                "timestamp", LocalDateTime.now().toString(),
+                "status", HttpStatus.NOT_FOUND.value(),
+                "error", "Not Found",
+                "message", ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+    @ExceptionHandler(SegmentNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleSegmentNotFound(SegmentNotFoundException ex) {
         Map<String, Object> body = Map.of(
                 "timestamp", LocalDateTime.now().toString(),
                 "status", HttpStatus.NOT_FOUND.value(),
